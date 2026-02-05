@@ -11,6 +11,7 @@ import {
   CreditCard,
   Settings,
   Dumbbell,
+  Blocks,
 } from "lucide-react"
 import Image from "next/image"
 
@@ -31,6 +32,11 @@ const navItems: NavItem[] = [
     title: "Modelos",
     href: "/dashboard/models",
     icon: Users,
+  },
+  {
+    title: "Constructor",
+    href: "/dashboard/modules",
+    icon: Blocks,
   },
   {
     title: "Estudios",

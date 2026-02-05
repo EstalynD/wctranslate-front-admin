@@ -1,0 +1,491 @@
+<!doctype html>
+<html class="dark" lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Generador de Cuestionarios - WC TRAINING</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+      rel="stylesheet"
+    />
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: "#af25f4",
+              "accent-coral": "#ff6b6b",
+              "background-light": "#f7f5f8",
+              "background-dark": "#0d0710",
+              "glass-bg": "rgba(255, 255, 255, 0.03)",
+              "glass-border": "rgba(255, 255, 255, 0.1)",
+            },
+            fontFamily: {
+              display: ["Inter", "sans-serif"],
+            },
+            borderRadius: {
+              DEFAULT: "0.25rem",
+              lg: "0.5rem",
+              xl: "0.75rem",
+              "2xl": "1rem",
+              full: "9999px",
+            },
+          },
+        },
+      };
+    </script>
+    <style type="text/tailwindcss">
+      .glass-effect {
+        background: rgba(255, 255, 255, 0.03);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      .gradient-primary {
+        background: linear-gradient(135deg, #af25f4 0%, #ff6b6b 100%);
+      }
+      .custom-scrollbar::-webkit-scrollbar {
+        width: 4px;
+      }
+      .custom-scrollbar::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+      }
+      .question-card-active {
+        background: linear-gradient(
+          90deg,
+          rgba(175, 37, 244, 0.15) 0%,
+          rgba(175, 37, 244, 0.05) 100%
+        );
+        border-left: 4px solid #af25f4;
+      }
+    </style>
+  </head>
+  <body
+    class="font-display bg-background-dark text-slate-100 min-h-screen overflow-hidden"
+  >
+    <div class="flex flex-col h-screen">
+      <header
+        class="h-16 flex items-center justify-between px-6 bg-background-dark/80 backdrop-blur-md border-b border-white/5 shrink-0 z-10"
+      >
+        <div class="flex items-center gap-6">
+          <button
+            class="flex items-center gap-2 text-slate-400 hover:text-white transition-colors text-sm font-bold"
+          >
+            <span class="material-symbols-outlined text-lg">arrow_back</span>
+            Volver al Constructor
+          </button>
+          <div class="h-6 w-px bg-white/10"></div>
+          <div class="flex items-center gap-3">
+            <span class="material-symbols-outlined text-amber-400">quiz</span>
+            <input
+              class="bg-transparent border-none focus:ring-0 text-lg font-black tracking-tight text-white p-0 w-64"
+              type="text"
+              value="Conceptos Básicos de Ética"
+            />
+            <span class="material-symbols-outlined text-slate-600 text-sm"
+              >edit</span
+            >
+          </div>
+        </div>
+        <div class="flex items-center gap-4">
+          <div
+            class="flex items-center gap-2 text-emerald-500 text-[10px] font-bold uppercase tracking-widest bg-emerald-500/10 px-3 py-1.5 rounded-full border border-emerald-500/20"
+          >
+            <span
+              class="size-1.5 rounded-full bg-emerald-500 animate-pulse"
+            ></span>
+            Autoguardado: 12:45
+          </div>
+          <button
+            class="gradient-primary hover:brightness-110 text-white px-6 py-2 rounded-lg font-bold text-sm transition-all shadow-lg shadow-primary/20 flex items-center gap-2"
+          >
+            <span class="material-symbols-outlined text-lg">save</span>
+            Guardar Cuestionario
+          </button>
+        </div>
+      </header>
+      <div class="flex-1 flex overflow-hidden">
+        <aside class="w-72 border-r border-white/5 flex flex-col bg-black/20">
+          <div class="p-6 flex items-center justify-between">
+            <h3
+              class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500"
+            >
+              Preguntas (4)
+            </h3>
+            <span class="text-[10px] font-bold text-primary"
+              >Total: 100 pts</span
+            >
+          </div>
+          <div class="flex-1 overflow-y-auto px-3 space-y-2 custom-scrollbar">
+            <button
+              class="w-full text-left p-4 rounded-xl question-card-active border border-white/10 transition-all group"
+            >
+              <div class="flex justify-between items-start mb-1">
+                <span class="text-[10px] font-bold text-primary uppercase"
+                  >Pregunta 1</span
+                >
+                <span class="material-symbols-outlined text-xs text-slate-600"
+                  >drag_indicator</span
+                >
+              </div>
+              <p class="text-xs font-medium text-white line-clamp-2">
+                ¿Cuál es la primera regla de etiqueta al iniciar un show?
+              </p>
+            </button>
+            <button
+              class="w-full text-left p-4 rounded-xl hover:bg-white/5 border border-transparent transition-all group"
+            >
+              <div class="flex justify-between items-start mb-1">
+                <span class="text-[10px] font-bold text-slate-500 uppercase"
+                  >Pregunta 2</span
+                >
+                <span class="material-symbols-outlined text-xs text-slate-600"
+                  >drag_indicator</span
+                >
+              </div>
+              <p class="text-xs font-medium text-slate-400 line-clamp-2">
+                Verdadero o Falso: El respeto mutuo es opcional si el usuario...
+              </p>
+            </button>
+            <button
+              class="w-full text-left p-4 rounded-xl hover:bg-white/5 border border-transparent transition-all group"
+            >
+              <div class="flex justify-between items-start mb-1">
+                <span class="text-[10px] font-bold text-slate-500 uppercase"
+                  >Pregunta 3</span
+                >
+                <span class="material-symbols-outlined text-xs text-slate-600"
+                  >drag_indicator</span
+                >
+              </div>
+              <p class="text-xs font-medium text-slate-400 line-clamp-2">
+                ¿Qué acción es considerada una falta grave en la plataforma?
+              </p>
+            </button>
+            <button
+              class="w-full text-left p-4 rounded-xl hover:bg-white/5 border border-transparent transition-all group"
+            >
+              <div class="flex justify-between items-start mb-1">
+                <span class="text-[10px] font-bold text-slate-500 uppercase"
+                  >Pregunta 4</span
+                >
+                <span class="material-symbols-outlined text-xs text-slate-600"
+                  >drag_indicator</span
+                >
+              </div>
+              <p class="text-xs font-medium text-slate-400 line-clamp-2">
+                Seleccione los 3 pilares del código de conducta...
+              </p>
+            </button>
+          </div>
+          <div class="p-4 border-t border-white/5">
+            <button
+              class="w-full flex items-center justify-center gap-2 py-3 rounded-xl border border-dashed border-white/20 text-slate-400 hover:text-white hover:border-primary/50 hover:bg-primary/5 transition-all text-xs font-bold uppercase tracking-wider"
+            >
+              <span class="material-symbols-outlined text-lg">add_circle</span>
+              Añadir Pregunta
+            </button>
+          </div>
+        </aside>
+        <main
+          class="flex-1 overflow-y-auto bg-background-dark custom-scrollbar"
+        >
+          <div class="max-w-4xl mx-auto p-10">
+            <div class="glass-effect rounded-2xl p-8 border-white/10 space-y-8">
+              <div class="flex flex-col md:flex-row gap-6">
+                <div class="flex-1 space-y-2">
+                  <label
+                    class="text-[10px] font-bold text-slate-500 uppercase tracking-widest"
+                    >Texto de la Pregunta</label
+                  >
+                  <textarea
+                    class="w-full bg-white/5 border-white/10 focus:ring-primary focus:border-primary rounded-xl px-4 py-3 text-white font-medium"
+                    placeholder="Escribe aquí la pregunta..."
+                    rows="3"
+                  >
+¿Cuál es la primera regla de etiqueta al iniciar un show?</textarea
+                  >
+                </div>
+                <div class="w-full md:w-64 space-y-2">
+                  <label
+                    class="text-[10px] font-bold text-slate-500 uppercase tracking-widest"
+                    >Tipo de Pregunta</label
+                  >
+                  <select
+                    class="w-full bg-white/5 border-white/10 focus:ring-primary focus:border-primary rounded-xl px-4 py-3 text-white"
+                  >
+                    <option>Selección Múltiple</option>
+                    <option>Verdadero / Falso</option>
+                    <option>Respuesta Corta</option>
+                  </select>
+                </div>
+              </div>
+              <div class="space-y-4">
+                <div class="flex items-center justify-between">
+                  <h4
+                    class="text-sm font-bold text-white uppercase tracking-wider"
+                  >
+                    Opciones de Respuesta
+                  </h4>
+                  <span class="text-[10px] text-slate-500 italic"
+                    >Marca el check verde para la respuesta correcta</span
+                  >
+                </div>
+                <div class="space-y-4">
+                  <div
+                    class="group relative bg-white/5 border border-white/10 rounded-xl p-4 transition-all focus-within:border-primary/50"
+                  >
+                    <div class="flex items-start gap-4">
+                      <button
+                        class="mt-2 size-6 rounded-full border-2 border-emerald-500 flex items-center justify-center text-emerald-500 bg-emerald-500/10"
+                      >
+                        <span
+                          class="material-symbols-outlined text-sm font-bold"
+                          >check</span
+                        >
+                      </button>
+                      <div class="flex-1 space-y-3">
+                        <input
+                          class="w-full bg-transparent border-none p-0 text-white font-medium focus:ring-0"
+                          placeholder="Texto de la opción..."
+                          type="text"
+                          value="Saludar cordialmente y sonreír a la cámara"
+                        />
+                        <div
+                          class="flex items-center gap-2 bg-black/30 px-3 py-2 rounded-lg"
+                        >
+                          <span
+                            class="material-symbols-outlined text-sm text-primary"
+                            >comment</span
+                          >
+                          <input
+                            class="w-full bg-transparent border-none p-0 text-[11px] text-slate-400 focus:ring-0"
+                            placeholder="Feedback para esta respuesta..."
+                            type="text"
+                            value="¡Exacto! La primera impresión es fundamental para retener al usuario."
+                          />
+                        </div>
+                      </div>
+                      <button
+                        class="text-slate-600 hover:text-red-400 transition-colors"
+                      >
+                        <span class="material-symbols-outlined text-xl"
+                          >delete</span
+                        >
+                      </button>
+                    </div>
+                  </div>
+                  <div
+                    class="group relative bg-white/5 border border-white/10 rounded-xl p-4 transition-all focus-within:border-primary/50"
+                  >
+                    <div class="flex items-start gap-4">
+                      <button
+                        class="mt-2 size-6 rounded-full border-2 border-white/10 flex items-center justify-center text-transparent hover:border-emerald-500/50 hover:text-emerald-500/50 transition-all"
+                      >
+                        <span
+                          class="material-symbols-outlined text-sm font-bold"
+                          >check</span
+                        >
+                      </button>
+                      <div class="flex-1 space-y-3">
+                        <input
+                          class="w-full bg-transparent border-none p-0 text-white font-medium focus:ring-0"
+                          placeholder="Texto de la opción..."
+                          type="text"
+                          value="Esperar a que el usuario hable primero"
+                        />
+                        <div
+                          class="flex items-center gap-2 bg-black/30 px-3 py-2 rounded-lg"
+                        >
+                          <span
+                            class="material-symbols-outlined text-sm text-slate-500"
+                            >comment</span
+                          >
+                          <input
+                            class="w-full bg-transparent border-none p-0 text-[11px] text-slate-400 focus:ring-0"
+                            placeholder="Feedback para esta respuesta..."
+                            type="text"
+                            value="No es correcto. Como modelo, debes tomar la iniciativa."
+                          />
+                        </div>
+                      </div>
+                      <button
+                        class="text-slate-600 hover:text-red-400 transition-colors"
+                      >
+                        <span class="material-symbols-outlined text-xl"
+                          >delete</span
+                        >
+                      </button>
+                    </div>
+                  </div>
+                  <div
+                    class="group relative bg-white/5 border border-white/10 rounded-xl p-4 transition-all focus-within:border-primary/50"
+                  >
+                    <div class="flex items-start gap-4">
+                      <button
+                        class="mt-2 size-6 rounded-full border-2 border-white/10 flex items-center justify-center text-transparent hover:border-emerald-500/50 hover:text-emerald-500/50 transition-all"
+                      >
+                        <span
+                          class="material-symbols-outlined text-sm font-bold"
+                          >check</span
+                        >
+                      </button>
+                      <div class="flex-1 space-y-3">
+                        <input
+                          class="w-full bg-transparent border-none p-0 text-white font-medium focus:ring-0"
+                          placeholder="Texto de la opción..."
+                          type="text"
+                          value="Pedir tokens inmediatamente"
+                        />
+                        <div
+                          class="flex items-center gap-2 bg-black/30 px-3 py-2 rounded-lg"
+                        >
+                          <span
+                            class="material-symbols-outlined text-sm text-slate-500"
+                            >comment</span
+                          >
+                          <input
+                            class="w-full bg-transparent border-none p-0 text-[11px] text-slate-400 focus:ring-0"
+                            placeholder="Feedback para esta respuesta..."
+                            type="text"
+                            value="Esto se considera agresivo y puede ahuyentar a nuevos usuarios."
+                          />
+                        </div>
+                      </div>
+                      <button
+                        class="text-slate-600 hover:text-red-400 transition-colors"
+                      >
+                        <span class="material-symbols-outlined text-xl"
+                          >delete</span
+                        >
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                <button
+                  class="flex items-center gap-2 text-primary hover:text-primary/80 font-bold text-xs uppercase tracking-wider py-2"
+                >
+                  <span class="material-symbols-outlined">add</span>
+                  Añadir opción de respuesta
+                </button>
+              </div>
+            </div>
+          </div>
+        </main>
+        <aside
+          class="w-80 border-l border-white/5 flex flex-col bg-black/20 p-6 space-y-8"
+        >
+          <div>
+            <h3
+              class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 mb-6"
+            >
+              Ajustes del Quiz
+            </h3>
+            <div class="space-y-6">
+              <div class="space-y-2">
+                <div class="flex justify-between items-center">
+                  <label class="text-xs font-bold text-slate-400"
+                    >Tiempo Límite</label
+                  >
+                  <span class="text-xs font-bold text-primary">15 min</span>
+                </div>
+                <input
+                  class="w-full h-1.5 bg-white/10 rounded-lg appearance-none cursor-pointer accent-primary"
+                  max="60"
+                  min="5"
+                  type="range"
+                  value="15"
+                />
+              </div>
+              <div class="space-y-2">
+                <div class="flex justify-between items-center">
+                  <label class="text-xs font-bold text-slate-400"
+                    >Puntuación para Aprobar</label
+                  >
+                  <span class="text-xs font-bold text-primary">80%</span>
+                </div>
+                <input
+                  class="w-full h-1.5 bg-white/10 rounded-lg appearance-none cursor-pointer accent-accent-coral"
+                  max="100"
+                  min="50"
+                  type="range"
+                  value="80"
+                />
+              </div>
+              <div class="pt-4 space-y-4 border-t border-white/5">
+                <label
+                  class="flex items-center justify-between cursor-pointer group"
+                >
+                  <span
+                    class="text-xs font-bold text-slate-400 group-hover:text-white transition-colors"
+                    >Orden Aleatorio</span
+                  >
+                  <div class="relative inline-flex items-center">
+                    <input checked="" class="sr-only peer" type="checkbox" />
+                    <div
+                      class="w-11 h-6 bg-white/10 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"
+                    ></div>
+                  </div>
+                </label>
+                <label
+                  class="flex items-center justify-between cursor-pointer group"
+                >
+                  <span
+                    class="text-xs font-bold text-slate-400 group-hover:text-white transition-colors"
+                    >Mostrar Resultados</span
+                  >
+                  <div class="relative inline-flex items-center">
+                    <input checked="" class="sr-only peer" type="checkbox" />
+                    <div
+                      class="w-11 h-6 bg-white/10 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"
+                    ></div>
+                  </div>
+                </label>
+                <label
+                  class="flex items-center justify-between cursor-pointer group"
+                >
+                  <span
+                    class="text-xs font-bold text-slate-400 group-hover:text-white transition-colors"
+                    >Permitir Reintentos</span
+                  >
+                  <div class="relative inline-flex items-center">
+                    <input class="sr-only peer" type="checkbox" />
+                    <div
+                      class="w-11 h-6 bg-white/10 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"
+                    ></div>
+                  </div>
+                </label>
+              </div>
+            </div>
+          </div>
+          <div
+            class="mt-auto p-4 bg-accent-coral/10 rounded-xl border border-accent-coral/20"
+          >
+            <div class="flex items-center gap-3 mb-2">
+              <span class="material-symbols-outlined text-accent-coral"
+                >error</span
+              >
+              <h5 class="text-xs font-bold text-accent-coral uppercase">
+                Resumen de Evaluación
+              </h5>
+            </div>
+            <p class="text-[11px] text-slate-400 leading-relaxed">
+              Este cuestionario es obligatorio para completar el módulo
+              "Protocolos de Comunicación".
+            </p>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </body>
+</html>
