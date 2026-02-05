@@ -1,0 +1,691 @@
+<!doctype html>
+
+<html class="dark" lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Gestión de Usuarios - WC TRAINING</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+      rel="stylesheet"
+    />
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: "#af25f4",
+              "background-light": "#f7f5f8",
+              "background-dark": "#130918", // Slightly deeper than original for better contrast
+              "glass-bg": "rgba(255, 255, 255, 0.03)",
+              "glass-border": "rgba(255, 255, 255, 0.1)",
+            },
+            fontFamily: {
+              display: ["Inter", "sans-serif"],
+            },
+            borderRadius: {
+              DEFAULT: "0.25rem",
+              lg: "0.5rem",
+              xl: "0.75rem",
+              full: "9999px",
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      .glass-effect {
+        background: rgba(255, 255, 255, 0.03);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      .sidebar-item-active {
+        background: linear-gradient(
+          90deg,
+          rgba(175, 37, 244, 0.2) 0%,
+          rgba(175, 37, 244, 0) 100%
+        );
+        border-left: 3px solid #af25f4;
+      }
+    </style>
+  </head>
+  <body
+    class="font-display bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen"
+  >
+    <div class="flex h-screen overflow-hidden">
+      <!-- Sidebar -->
+      <aside
+        class="w-64 bg-background-light dark:bg-[#1c1022] border-r border-slate-200 dark:border-white/5 flex flex-col shrink-0"
+      >
+        <div class="p-6 flex items-center gap-3">
+          <div
+            class="size-10 bg-primary rounded-lg flex items-center justify-center text-white shadow-lg shadow-primary/20"
+          >
+            <span class="material-symbols-outlined font-bold">exercise</span>
+          </div>
+          <div>
+            <h1
+              class="text-lg font-black tracking-tighter leading-none dark:text-white"
+            >
+              WC TRAINING
+            </h1>
+            <p
+              class="text-[10px] uppercase tracking-widest text-slate-500 dark:text-primary font-bold"
+            >
+              Admin Panel
+            </p>
+          </div>
+        </div>
+        <nav class="flex-1 px-4 space-y-1 mt-4">
+          <a
+            class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-white/5 transition-colors"
+            href="#"
+          >
+            <span class="material-symbols-outlined text-[22px]">dashboard</span>
+            <span class="text-sm font-medium">Dashboard</span>
+          </a>
+          <a
+            class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-white sidebar-item-active"
+            href="#"
+          >
+            <span class="material-symbols-outlined text-[22px] fill-1"
+              >group</span
+            >
+            <span class="text-sm font-medium">Modelos</span>
+          </a>
+          <a
+            class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-white/5 transition-colors"
+            href="#"
+          >
+            <span class="material-symbols-outlined text-[22px]">apartment</span>
+            <span class="text-sm font-medium">Estudios</span>
+          </a>
+          <a
+            class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-white/5 transition-colors"
+            href="#"
+          >
+            <span class="material-symbols-outlined text-[22px]">bar_chart</span>
+            <span class="text-sm font-medium">Reportes</span>
+          </a>
+          <a
+            class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-white/5 transition-colors"
+            href="#"
+          >
+            <span class="material-symbols-outlined text-[22px]">payments</span>
+            <span class="text-sm font-medium">Pagos</span>
+          </a>
+        </nav>
+        <div class="p-4 mt-auto">
+          <div class="glass-effect rounded-xl p-4 mb-4">
+            <p class="text-xs font-semibold text-slate-400 mb-2 uppercase">
+              Soporte 24/7
+            </p>
+            <button
+              class="w-full py-2 bg-primary text-white text-xs font-bold rounded-lg hover:brightness-110 transition-all"
+            >
+              Contactar Soporte
+            </button>
+          </div>
+          <div
+            class="flex items-center gap-3 px-3 py-2 border-t border-slate-200 dark:border-white/5 pt-4"
+          >
+            <div
+              class="size-8 rounded-full bg-slate-300 dark:bg-white/10 overflow-hidden"
+            >
+              <img
+                alt="Admin Avatar"
+                class="w-full h-full object-cover"
+                data-alt="Close up portrait of a professional male administrator"
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuDh0Wd_VwEHLrLeegZn_UvfySIGHmQXv3Wgv1JYODVNV8px1Nf8ogH0Md1MQnVVvnJA23Ok1CBAs_XCfdbRNgosyF8N2KK-zMDDwTa3usGGofhzIbOhEUfWldRaiJd7o9TUsoO_GBH6NbsrqT7Xcd4MiXuyW3IqCbGhV8xvUUM8i7xkuTLQAv-vHCWeWMmta-LoQrGLNhQXmQCJF4Fz0_a1_rOf7FhmZiLxSuUuPk_Qc0cPvErbQ8QDzQvxNKShgqi7CSBBVb92UPg"
+              />
+            </div>
+            <div class="flex flex-col overflow-hidden">
+              <p class="text-xs font-bold truncate">Alex Smith</p>
+              <p class="text-[10px] text-slate-500 truncate">Super Admin</p>
+            </div>
+            <button class="ml-auto text-slate-400 hover:text-white">
+              <span class="material-symbols-outlined text-xl">settings</span>
+            </button>
+          </div>
+        </div>
+      </aside>
+      <!-- Main Content -->
+      <main class="flex-1 flex flex-col overflow-hidden">
+        <!-- Header -->
+        <header
+          class="h-20 flex items-center justify-between px-8 bg-white/50 dark:bg-transparent border-b border-slate-200 dark:border-white/5 shrink-0"
+        >
+          <div>
+            <h2 class="text-2xl font-black tracking-tight dark:text-white">
+              Gestión de Usuarios
+            </h2>
+            <p class="text-sm text-slate-500 dark:text-slate-400">
+              Administra y monitorea el progreso de tus modelos en tiempo real
+            </p>
+          </div>
+          <button
+            class="flex items-center gap-2 bg-primary hover:brightness-110 text-white px-5 py-2.5 rounded-lg font-bold text-sm transition-all shadow-lg shadow-primary/30"
+          >
+            <span class="material-symbols-outlined text-xl">person_add</span>
+            Agregar Nueva Modelo
+          </button>
+        </header>
+        <!-- Content Area -->
+        <div class="flex-1 overflow-y-auto p-8 space-y-8">
+          <!-- Quick Stats -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div
+              class="glass-effect rounded-2xl p-6 relative overflow-hidden group"
+            >
+              <div
+                class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity"
+              >
+                <span class="material-symbols-outlined text-6xl">groups</span>
+              </div>
+              <p class="text-slate-400 text-sm font-medium">Total Modelos</p>
+              <div class="flex items-end gap-3 mt-1">
+                <h3 class="text-4xl font-black tracking-tight dark:text-white">
+                  124
+                </h3>
+                <span
+                  class="text-emerald-500 text-sm font-bold pb-1 flex items-center"
+                >
+                  <span class="material-symbols-outlined text-sm"
+                    >trending_up</span
+                  >
+                  5%
+                </span>
+              </div>
+            </div>
+            <div
+              class="glass-effect rounded-2xl p-6 relative overflow-hidden group border-l-4 border-l-primary/40"
+            >
+              <div
+                class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity"
+              >
+                <span class="material-symbols-outlined text-6xl"
+                  >how_to_reg</span
+                >
+              </div>
+              <p class="text-slate-400 text-sm font-medium">Activas</p>
+              <div class="flex items-end gap-3 mt-1">
+                <h3 class="text-4xl font-black tracking-tight dark:text-white">
+                  98
+                </h3>
+                <span
+                  class="text-orange-500 text-sm font-bold pb-1 flex items-center"
+                >
+                  <span class="material-symbols-outlined text-sm"
+                    >trending_down</span
+                  >
+                  2%
+                </span>
+              </div>
+            </div>
+            <div
+              class="glass-effect rounded-2xl p-6 relative overflow-hidden group"
+            >
+              <div
+                class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity"
+              >
+                <span class="material-symbols-outlined text-6xl"
+                  >pending_actions</span
+                >
+              </div>
+              <p class="text-slate-400 text-sm font-medium">
+                Pendientes de Registro
+              </p>
+              <div class="flex items-end gap-3 mt-1">
+                <h3 class="text-4xl font-black tracking-tight dark:text-white">
+                  26
+                </h3>
+                <span
+                  class="text-emerald-500 text-sm font-bold pb-1 flex items-center"
+                >
+                  <span class="material-symbols-outlined text-sm"
+                    >trending_up</span
+                  >
+                  12%
+                </span>
+              </div>
+            </div>
+          </div>
+          <!-- Filters & Search -->
+          <div
+            class="glass-effect rounded-2xl p-4 flex flex-wrap gap-4 items-center"
+          >
+            <div class="flex-1 min-w-[300px] relative">
+              <span
+                class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+                >search</span
+              >
+              <input
+                class="w-full bg-slate-100 dark:bg-white/5 border-none focus:ring-2 focus:ring-primary rounded-xl pl-10 pr-4 py-3 text-sm placeholder:text-slate-500"
+                placeholder="Buscar por nombre, email o ID..."
+                type="text"
+              />
+            </div>
+            <div class="flex gap-2">
+              <button
+                class="flex items-center gap-2 bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 px-4 py-3 rounded-xl text-sm font-medium transition-colors"
+              >
+                Estado: Todas
+                <span class="material-symbols-outlined text-lg"
+                  >expand_more</span
+                >
+              </button>
+              <button
+                class="flex items-center gap-2 bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 px-4 py-3 rounded-xl text-sm font-medium transition-colors"
+              >
+                Nivel: Todos
+                <span class="material-symbols-outlined text-lg"
+                  >expand_more</span
+                >
+              </button>
+              <button
+                class="flex items-center gap-2 bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 px-4 py-3 rounded-xl text-sm font-medium transition-colors"
+              >
+                Estudio: Todos
+                <span class="material-symbols-outlined text-lg"
+                  >expand_more</span
+                >
+              </button>
+            </div>
+            <button
+              class="bg-primary/10 hover:bg-primary/20 text-primary p-3 rounded-xl transition-colors"
+            >
+              <span class="material-symbols-outlined">tune</span>
+            </button>
+          </div>
+          <!-- Data Table -->
+          <div class="glass-effect rounded-2xl overflow-hidden shadow-2xl">
+            <table class="w-full text-left border-collapse">
+              <thead>
+                <tr
+                  class="bg-white/5 dark:bg-white/5 text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-wider"
+                >
+                  <th class="px-6 py-4">Modelo</th>
+                  <th class="px-6 py-4">Contacto</th>
+                  <th class="px-6 py-4 text-center">Nivel</th>
+                  <th class="px-6 py-4">Última Conexión</th>
+                  <th class="px-6 py-4">Progreso Training</th>
+                  <th class="px-6 py-4 text-right">Acciones</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-200 dark:divide-white/5">
+                <!-- Row 1 -->
+                <tr class="hover:bg-white/5 transition-colors group">
+                  <td class="px-6 py-4">
+                    <div class="flex items-center gap-3">
+                      <div class="size-10 rounded-full bg-primary/20 p-0.5">
+                        <img
+                          alt="Model Avatar"
+                          class="w-full h-full rounded-full object-cover"
+                          data-alt="Profile photo of a professional webcam model"
+                          src="https://lh3.googleusercontent.com/aida-public/AB6AXuDeqKjaA2wWlGPK2WwhbS1nHa02UMb62zrLWZawavjoj8CcLo2Uh4D7m_kuTr9pctuk1tO2TAW8fpU6IZ75Rgl6ybb2lHlcOAgBU36zfWoe50L00fsow27XUefmwrWoxOQtMQdPcKbccb-3f8UxKbHU3lOjkZVMUVTOdWsKxkRr7_m0PD6mbgYOIM5GM2TLK4QTPSHxibGqVybNNGTWjSHdyyQCLUCtyqe6euXUHKGzRHDm91i8ZXosF9W86-9O5ge_N-DbyWx5_ow"
+                        />
+                      </div>
+                      <div>
+                        <p class="text-sm font-bold dark:text-white">
+                          Valentina Rios
+                        </p>
+                        <p class="text-[11px] text-slate-500">ID: WCT-9042</p>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="px-6 py-4">
+                    <p class="text-sm dark:text-slate-300">v.rios@studio.com</p>
+                  </td>
+                  <td class="px-6 py-4 text-center">
+                    <span
+                      class="px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-cyan-500/10 text-cyan-500 border border-cyan-500/20"
+                      >Diamond</span
+                    >
+                  </td>
+                  <td class="px-6 py-4">
+                    <p class="text-sm dark:text-slate-400">Hace 14 min</p>
+                  </td>
+                  <td class="px-6 py-4">
+                    <div class="w-full max-w-[120px]">
+                      <div class="flex justify-between items-center mb-1">
+                        <span class="text-[10px] font-bold dark:text-slate-400"
+                          >92%</span
+                        >
+                      </div>
+                      <div
+                        class="h-1.5 w-full bg-slate-200 dark:bg-white/10 rounded-full overflow-hidden"
+                      >
+                        <div
+                          class="h-full bg-primary rounded-full"
+                          style="width: 92%"
+                        ></div>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="px-6 py-4 text-right">
+                    <div class="flex justify-end gap-2">
+                      <button
+                        class="p-2 hover:bg-primary/20 hover:text-primary rounded-lg transition-all text-slate-400"
+                        title="Ver Perfil"
+                      >
+                        <span class="material-symbols-outlined text-lg"
+                          >visibility</span
+                        >
+                      </button>
+                      <button
+                        class="p-2 hover:bg-blue-500/20 hover:text-blue-400 rounded-lg transition-all text-slate-400"
+                        title="Editar"
+                      >
+                        <span class="material-symbols-outlined text-lg"
+                          >edit</span
+                        >
+                      </button>
+                      <button
+                        class="p-2 hover:bg-rose-500/20 hover:text-rose-400 rounded-lg transition-all text-slate-400"
+                        title="Suspender"
+                      >
+                        <span class="material-symbols-outlined text-lg"
+                          >block</span
+                        >
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+                <!-- Row 2 -->
+                <tr class="hover:bg-white/5 transition-colors group">
+                  <td class="px-6 py-4">
+                    <div class="flex items-center gap-3">
+                      <div class="size-10 rounded-full bg-primary/20 p-0.5">
+                        <img
+                          alt="Model Avatar"
+                          class="w-full h-full rounded-full object-cover"
+                          data-alt="Profile photo of a young female model"
+                          src="https://lh3.googleusercontent.com/aida-public/AB6AXuCnntiVH2ra3uhQYe-YLWuOnUSeh1kjOHJMQFDXrnQIuNFVcnIfXH-e8A1IF_gbeVqKflXnkjD6hOaLwWA0kchupmi7djPc5Ku3EMZ-rWpwCWy_mJw0obI-GfBNwIRqjp18j9gwtzKHqmZmxnGr7pTU_fIm7llANU0NGkODDQpSSucU_2QiKlIkiKvRALwjg5pN8-WsGBRdf7Pst2vFgMTyInkXTMPRrygO1XqmLFga_Wohh41VjvgNbQcNkI0_xLV-4AQ4KgurS6k"
+                        />
+                      </div>
+                      <div>
+                        <p class="text-sm font-bold dark:text-white">
+                          Camila Torres
+                        </p>
+                        <p class="text-[11px] text-slate-500">ID: WCT-8821</p>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="px-6 py-4">
+                    <p class="text-sm dark:text-slate-300">
+                      c.torres@gmail.com
+                    </p>
+                  </td>
+                  <td class="px-6 py-4 text-center">
+                    <span
+                      class="px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-amber-500/10 text-amber-500 border border-amber-500/20"
+                      >Gold</span
+                    >
+                  </td>
+                  <td class="px-6 py-4">
+                    <p class="text-sm dark:text-slate-400">Hace 2 horas</p>
+                  </td>
+                  <td class="px-6 py-4">
+                    <div class="w-full max-w-[120px]">
+                      <div class="flex justify-between items-center mb-1">
+                        <span class="text-[10px] font-bold dark:text-slate-400"
+                          >65%</span
+                        >
+                      </div>
+                      <div
+                        class="h-1.5 w-full bg-slate-200 dark:bg-white/10 rounded-full overflow-hidden"
+                      >
+                        <div
+                          class="h-full bg-primary rounded-full"
+                          style="width: 65%"
+                        ></div>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="px-6 py-4 text-right">
+                    <div class="flex justify-end gap-2">
+                      <button
+                        class="p-2 hover:bg-primary/20 hover:text-primary rounded-lg transition-all text-slate-400"
+                        title="Ver Perfil"
+                      >
+                        <span class="material-symbols-outlined text-lg"
+                          >visibility</span
+                        >
+                      </button>
+                      <button
+                        class="p-2 hover:bg-blue-500/20 hover:text-blue-400 rounded-lg transition-all text-slate-400"
+                        title="Editar"
+                      >
+                        <span class="material-symbols-outlined text-lg"
+                          >edit</span
+                        >
+                      </button>
+                      <button
+                        class="p-2 hover:bg-rose-500/20 hover:text-rose-400 rounded-lg transition-all text-slate-400"
+                        title="Suspender"
+                      >
+                        <span class="material-symbols-outlined text-lg"
+                          >block</span
+                        >
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+                <!-- Row 3 -->
+                <tr class="hover:bg-white/5 transition-colors group">
+                  <td class="px-6 py-4">
+                    <div class="flex items-center gap-3">
+                      <div class="size-10 rounded-full bg-primary/20 p-0.5">
+                        <img
+                          alt="Model Avatar"
+                          class="w-full h-full rounded-full object-cover"
+                          data-alt="Profile photo of a smiling female training candidate"
+                          src="https://lh3.googleusercontent.com/aida-public/AB6AXuCg_4YygFb5dgxI1pxNHYeGPDKEZyPwfvKQxtWKmiLEofjQuBFNZAvIaQxhvS87fSbrOkjfoLUwD0qn9heWauWPvAoSSCtwL2IQB5hZqKKYbjRRlDQ2D6EgTRV8mMrBTnsv63w8UOOa0WrmDoPuWWokq7ts3jD-jQKME_jHTW_H7-pbAfo-i-NlAU1moX8KT_YCD6KwWvozXfrOL-RVlCWStf3mvDOflJTdovJ7gtb_MA3c8-IFEkX62QgCj5Fg4RXLHdxcFA9XEZU"
+                        />
+                      </div>
+                      <div>
+                        <p class="text-sm font-bold dark:text-white">
+                          Isabella Luna
+                        </p>
+                        <p class="text-[11px] text-slate-500">ID: WCT-9100</p>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="px-6 py-4">
+                    <p class="text-sm dark:text-slate-300">
+                      luna_isa@outlook.com
+                    </p>
+                  </td>
+                  <td class="px-6 py-4 text-center">
+                    <span
+                      class="px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-slate-400/10 text-slate-400 border border-slate-400/20"
+                      >Silver</span
+                    >
+                  </td>
+                  <td class="px-6 py-4">
+                    <p class="text-sm dark:text-slate-400">Hace 3 días</p>
+                  </td>
+                  <td class="px-6 py-4">
+                    <div class="w-full max-w-[120px]">
+                      <div class="flex justify-between items-center mb-1">
+                        <span class="text-[10px] font-bold dark:text-slate-400"
+                          >12%</span
+                        >
+                      </div>
+                      <div
+                        class="h-1.5 w-full bg-slate-200 dark:bg-white/10 rounded-full overflow-hidden"
+                      >
+                        <div
+                          class="h-full bg-primary rounded-full"
+                          style="width: 12%"
+                        ></div>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="px-6 py-4 text-right">
+                    <div class="flex justify-end gap-2">
+                      <button
+                        class="p-2 hover:bg-primary/20 hover:text-primary rounded-lg transition-all text-slate-400"
+                        title="Ver Perfil"
+                      >
+                        <span class="material-symbols-outlined text-lg"
+                          >visibility</span
+                        >
+                      </button>
+                      <button
+                        class="p-2 hover:bg-blue-500/20 hover:text-blue-400 rounded-lg transition-all text-slate-400"
+                        title="Editar"
+                      >
+                        <span class="material-symbols-outlined text-lg"
+                          >edit</span
+                        >
+                      </button>
+                      <button
+                        class="p-2 hover:bg-rose-500/20 hover:text-rose-400 rounded-lg transition-all text-slate-400"
+                        title="Suspender"
+                      >
+                        <span class="material-symbols-outlined text-lg"
+                          >block</span
+                        >
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+                <!-- Row 4 (Suspended Example) -->
+                <tr
+                  class="hover:bg-white/5 transition-colors group bg-rose-500/[0.02]"
+                >
+                  <td class="px-6 py-4">
+                    <div class="flex items-center gap-3">
+                      <div
+                        class="size-10 rounded-full bg-rose-500/20 p-0.5 grayscale"
+                      >
+                        <img
+                          alt="Model Avatar"
+                          class="w-full h-full rounded-full object-cover"
+                          data-alt="B&amp;W profile photo of a suspended model account"
+                          src="https://lh3.googleusercontent.com/aida-public/AB6AXuBImtTNOaygbwAAag8mpZVQooeXjres0nLAqou14lmyvMRSwYLajQJlOlqJZapw_YSJBr8xcHTvHaRvSzsGesCCNr-amxdaVe8zy38FB2SyRaEQF-zKFLmnnfKP5xUBAMjxkzO5OjMFyUMnhmLyAEkF5L_6wrdHsE0pTRBXHdrTjqSwOM9a87FhiM0OOD6fkD6fVOaWIR9iz0kmiB7hwj_W8Vuo1ez7rV_sI7vrYR6CG3Ho2QWS_3mn3mnUM3by9sBF-Fb2HEa4A-o"
+                        />
+                      </div>
+                      <div>
+                        <p class="text-sm font-bold dark:text-white opacity-50">
+                          Sofia Mendoza
+                        </p>
+                        <p
+                          class="text-[11px] text-rose-500/70 font-bold uppercase"
+                        >
+                          Cuenta Suspendida
+                        </p>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="px-6 py-4">
+                    <p class="text-sm dark:text-slate-500">
+                      s.mendoza@studio.com
+                    </p>
+                  </td>
+                  <td class="px-6 py-4 text-center">
+                    <span
+                      class="px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-rose-500/10 text-rose-500 border border-rose-500/20"
+                      >Banned</span
+                    >
+                  </td>
+                  <td class="px-6 py-4">
+                    <p class="text-sm dark:text-slate-500">Hace 1 mes</p>
+                  </td>
+                  <td class="px-6 py-4">
+                    <div class="w-full max-w-[120px] opacity-40">
+                      <div
+                        class="h-1.5 w-full bg-slate-200 dark:bg-white/10 rounded-full overflow-hidden"
+                      >
+                        <div
+                          class="h-full bg-slate-400 rounded-full"
+                          style="width: 45%"
+                        ></div>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="px-6 py-4 text-right">
+                    <div class="flex justify-end gap-2">
+                      <button
+                        class="p-2 hover:bg-primary/20 hover:text-primary rounded-lg transition-all text-slate-400"
+                        title="Ver Perfil"
+                      >
+                        <span class="material-symbols-outlined text-lg"
+                          >visibility</span
+                        >
+                      </button>
+                      <button
+                        class="p-2 hover:bg-emerald-500/20 hover:text-emerald-400 rounded-lg transition-all text-slate-400"
+                        title="Reactivar"
+                      >
+                        <span class="material-symbols-outlined text-lg"
+                          >check_circle</span
+                        >
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <!-- Pagination -->
+            <div class="bg-white/5 p-4 flex items-center justify-between">
+              <p class="text-xs text-slate-500 font-medium">
+                Mostrando <span class="text-slate-300">1 - 4</span> de
+                <span class="text-slate-300">124</span> modelos
+              </p>
+              <div class="flex gap-2">
+                <button
+                  class="size-8 flex items-center justify-center rounded-lg bg-white/5 text-slate-500 hover:text-white transition-colors"
+                >
+                  <span class="material-symbols-outlined text-lg"
+                    >chevron_left</span
+                  >
+                </button>
+                <button
+                  class="size-8 flex items-center justify-center rounded-lg bg-primary text-white font-bold text-xs"
+                >
+                  1
+                </button>
+                <button
+                  class="size-8 flex items-center justify-center rounded-lg bg-white/5 text-slate-400 hover:text-white font-bold text-xs transition-colors"
+                >
+                  2
+                </button>
+                <button
+                  class="size-8 flex items-center justify-center rounded-lg bg-white/5 text-slate-400 hover:text-white font-bold text-xs transition-colors"
+                >
+                  3
+                </button>
+                <span class="text-slate-600 self-center px-1">...</span>
+                <button
+                  class="size-8 flex items-center justify-center rounded-lg bg-white/5 text-slate-400 hover:text-white font-bold text-xs transition-colors"
+                >
+                  31
+                </button>
+                <button
+                  class="size-8 flex items-center justify-center rounded-lg bg-white/5 text-slate-500 hover:text-white transition-colors"
+                >
+                  <span class="material-symbols-outlined text-lg"
+                    >chevron_right</span
+                  >
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>
