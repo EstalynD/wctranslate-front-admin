@@ -3,15 +3,10 @@
 # Multi-stage Dockerfile optimizado para producción
 # ============================================
 
-# ---- Etapa base: imagen con pnpm ----
+# ---- Etapa base ----
 FROM node:22-alpine AS base
 
 RUN apk add --no-cache libc6-compat
-
-# Habilitar corepack para pnpm
-ENV PNPM_HOME="/pnpm"
-ENV PATH="$PNPM_HOME:$PATH"
-RUN corepack enable && corepack prepare pnpm@latest --activate
 
 WORKDIR /app
 
@@ -48,7 +43,7 @@ ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
 ENV NEXT_TELEMETRY_DISABLED=1
 
 # Build de producción
-RUN pnpm build
+RUN npm run build
 
 # ---- Etapa de producción ----
 FROM node:22-alpine AS production
