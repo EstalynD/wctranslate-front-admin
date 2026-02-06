@@ -18,10 +18,9 @@ WORKDIR /app
 # ---- Etapa de dependencias ----
 FROM base AS deps
 
-COPY package.json pnpm-lock.yaml ./
+COPY package.json package-lock.json ./
 
-RUN --mount=type=cache,id=pnpm-admin,target=/pnpm/store \
-    pnpm install --frozen-lockfile
+RUN npm ci
 
 # ---- Etapa de build ----
 FROM base AS builder
