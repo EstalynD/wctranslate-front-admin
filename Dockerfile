@@ -33,7 +33,6 @@ COPY --from=deps /app/package.json ./
 
 # Copiar configuraciones de build
 COPY next.config.ts tsconfig.json postcss.config.mjs components.json ./
-COPY next-env.d.ts ./
 COPY eslint.config.mjs ./
 
 # Copiar código fuente
@@ -41,7 +40,6 @@ COPY app/ ./app/
 COPY components/ ./components/
 COPY lib/ ./lib/
 COPY public/ ./public/
-COPY template/ ./template/
 
 # Variables de entorno necesarias en build time
 ARG NEXT_PUBLIC_API_URL
