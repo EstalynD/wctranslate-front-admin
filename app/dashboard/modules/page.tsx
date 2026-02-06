@@ -17,8 +17,6 @@ import {
   type Course,
   type QueryCoursesParams,
   CourseStatus,
-  CourseCategory,
-  categoryLabels,
 } from "@/lib/api"
 
 /* ===== Status mapping para el componente ===== */
@@ -44,7 +42,6 @@ export default function ModulesPage() {
   // Filtros
   const [searchTerm, setSearchTerm] = useState("")
   const [statusFilter, setStatusFilter] = useState<CourseStatus | "">("")
-  const [categoryFilter, setCategoryFilter] = useState<CourseCategory | "">("")
   const [sortBy, setSortBy] = useState<string>("")
 
   // Cargar cursos
@@ -59,7 +56,6 @@ export default function ModulesPage() {
       }
 
       if (statusFilter) params.status = statusFilter
-      if (categoryFilter) params.category = categoryFilter
 
       const response = await coursesService.getAll(params)
 
@@ -72,7 +68,7 @@ export default function ModulesPage() {
     } finally {
       setIsLoading(false)
     }
-  }, [currentPage, statusFilter, categoryFilter])
+  }, [currentPage, statusFilter])
 
   // Cargar al montar y cuando cambien los filtros
   useEffect(() => {
@@ -168,26 +164,6 @@ export default function ModulesPage() {
               <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
             </div>
 
-            {/* Category Filter */}
-            <div className="relative">
-              <select
-                value={categoryFilter}
-                onChange={(e) => {
-                  setCategoryFilter(e.target.value as CourseCategory | "")
-                  setCurrentPage(1)
-                }}
-                className="appearance-none bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 pr-10 text-sm text-slate-300 focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none transition-all min-w-[150px] cursor-pointer"
-              >
-                <option value="">Categoría: Todas</option>
-                {Object.entries(categoryLabels).map(([value, label]) => (
-                  <option key={value} value={value}>
-                    {label}
-                  </option>
-                ))}
-              </select>
-              <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
-            </div>
-
             {/* Sort Filter */}
             <div className="relative">
               <select
@@ -252,7 +228,6 @@ export default function ModulesPage() {
                 status={statusMap[course.status]}
                 topicsCount={course.themes.length}
                 modelsCount={course.enrolledCount}
-                category={categoryLabels[course.category]}
                 level={course.level}
                 priority={index < 4}
                 onEdit={() => handleEditModule(course._id)}

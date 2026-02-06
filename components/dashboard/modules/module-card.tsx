@@ -1,7 +1,7 @@
 "use client"
 
 import Image from "next/image"
-import { Pencil, Eye, Trash2, Layers, User, Tag, Signal } from "lucide-react"
+import { Pencil, Eye, Trash2, Layers, User, Signal } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 /* ===== Types ===== */
@@ -14,7 +14,6 @@ interface ModuleCardProps {
   status: ModuleStatus
   topicsCount: number
   modelsCount: number
-  category?: string
   level?: string
   priority?: boolean
   onEdit?: () => void
@@ -61,7 +60,6 @@ export function ModuleCard({
   status,
   topicsCount,
   modelsCount,
-  category,
   level,
   priority = false,
   onEdit,
@@ -124,21 +122,13 @@ export function ModuleCard({
           {title}
         </h3>
 
-        {/* Category & Level */}
-        {(category || level) && (
+        {/* Level */}
+        {level && (
           <div className="flex items-center gap-2 mb-4 flex-wrap">
-            {category && (
-              <span className="inline-flex items-center gap-1 text-[10px] font-medium px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-400 border border-blue-500/20">
-                <Tag className="w-3 h-3" />
-                {category}
-              </span>
-            )}
-            {level && (
-              <span className="inline-flex items-center gap-1 text-[10px] font-medium px-2 py-0.5 rounded-full bg-violet-500/10 text-violet-400 border border-violet-500/20">
-                <Signal className="w-3 h-3" />
-                {level}
-              </span>
-            )}
+            <span className="inline-flex items-center gap-1 text-[10px] font-medium px-2 py-0.5 rounded-full bg-violet-500/10 text-violet-400 border border-violet-500/20">
+              <Signal className="w-3 h-3" />
+              {level}
+            </span>
           </div>
         )}
 

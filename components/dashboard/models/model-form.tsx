@@ -27,6 +27,7 @@ import {
   userStatusLabels,
   userStageLabels,
   type AdminCreateUserData,
+  type UpdateUserData,
   type UserModel,
   type Platform,
 } from "@/lib/api"
@@ -51,6 +52,8 @@ interface ModelFormData {
 }
 
 interface ModelFormProps {
+  mode?: "create" | "edit"
+  user?: UserModel
   onSubmit?: (user: UserModel) => void
   onCancel?: () => void
   className?: string
@@ -107,8 +110,28 @@ const labelClass = "text-sm text-slate-300 font-medium flex items-center gap-2"
 const sectionHeaderClass = "flex items-center gap-2 pb-2 border-b border-white/5"
 
 /* ===== Componente ===== */
-export function ModelForm({ onSubmit, onCancel, className }: ModelFormProps) {
-  const [formData, setFormData] = useState<ModelFormData>(defaultFormData)
+export function ModelForm({ mode = "create", user, onSubmit, onCancel, className }: ModelFormProps) {
+  const isEditMode = mode === "edit"
+
+  // En modo edición, pre-cargar datos del usuario
+  const initialFormData: ModelFormData = user ? {
+    email: user.email,
+    password: "",
+    confirmPassword: "",
+    firstName: user.profile.firstName,
+    lastName: user.profile.lastName,
+    nickName: user.profile.nickName || "",
+    role: user.role,
+    status: user.status,
+    platformId: user.modelConfig?.platformId || "",
+    planType: user.subscriptionAccess?.planType || PlanType.FREE,
+    stage: user.modelConfig?.stage || UserStage.INICIACION,
+    isSuperUser: user.modelConfig?.isSuperUser || false,
+    isDemo: user.modelConfig?.isDemo || false,
+    studioId: user.modelConfig?.studioId || "",
+  } : defaultFormData
+
+  const [formData, setFormData] = useState<ModelFormData>(initialFormData)
   const [platforms, setPlatforms] = useState<Platform[]>([])
   const [loadingPlatforms, setLoadingPlatforms] = useState(true)
   const [showPassword, setShowPassword] = useState(false)
@@ -149,17 +172,9 @@ export function ModelForm({ onSubmit, onCancel, className }: ModelFormProps) {
     setIsLoading(true)
 
     try {
-      // Validaciones
+      // Validaciones comunes
       if (!formData.email.trim()) {
         throw new Error("El email es requerido")
-      }
-
-      if (!formData.password || formData.password.length < 8) {
-        throw new Error("La contraseña debe tener al menos 8 caracteres")
-      }
-
-      if (formData.password !== formData.confirmPassword) {
-        throw new Error("Las contraseñas no coinciden")
       }
 
       if (!formData.firstName.trim()) {
@@ -170,35 +185,87 @@ export function ModelForm({ onSubmit, onCancel, className }: ModelFormProps) {
         throw new Error("El apellido es requerido")
       }
 
-      // Construir datos para el API
-      const createData: AdminCreateUserData = {
-        email: formData.email.trim().toLowerCase(),
-        password: formData.password,
-        profile: {
-          firstName: formData.firstName.trim(),
-          lastName: formData.lastName.trim(),
-          nickName: formData.nickName.trim() || undefined,
-        },
-        role: formData.role,
-        planType: formData.planType,
-        stage: formData.stage,
-        isSuperUser: formData.isSuperUser,
-        isDemo: formData.isDemo,
-        studioId: formData.studioId.trim() || undefined,
+      // Validaciones de contraseña (solo obligatorias en modo creación)
+      if (!isEditMode) {
+        if (!formData.password || formData.password.length < 8) {
+          throw new Error("La contraseña debe tener al menos 8 caracteres")
+        }
+
+        if (formData.password !== formData.confirmPassword) {
+          throw new Error("Las contraseñas no coinciden")
+        }
+      } else {
+        // En modo edición, validar solo si se ingresó una contraseña
+        if (formData.password) {
+          if (formData.password.length < 8) {
+            throw new Error("La contraseña debe tener al menos 8 caracteres")
+          }
+          if (formData.password !== formData.confirmPassword) {
+            throw new Error("Las contraseñas no coinciden")
+          }
+        }
       }
 
-      // Solo asignar plataforma si es MODEL y se seleccionó una
-      if (isModelRole && formData.platformId) {
-        createData.platformId = formData.platformId
+      if (isEditMode && user) {
+        // --- MODO EDICIÓN ---
+        // Actualizar datos básicos del usuario
+        const updateData: UpdateUserData = {
+          email: formData.email.trim().toLowerCase(),
+          profile: {
+            firstName: formData.firstName.trim(),
+            lastName: formData.lastName.trim(),
+            nickName: formData.nickName.trim() || undefined,
+          },
+          role: formData.role,
+          status: formData.status,
+        }
+
+        const updatedUser = await usersService.update(user._id, updateData)
+
+        // Si cambió la plataforma y es modelo, actualizar plataforma
+        if (isModelRole && formData.platformId && formData.platformId !== user.modelConfig?.platformId) {
+          await usersService.assignPlatform(user._id, { platformId: formData.platformId })
+        }
+
+        // Actualizar suscripción si cambió el plan
+        if (formData.planType !== user.subscriptionAccess?.planType) {
+          await usersService.updateSubscription(user._id, { planType: formData.planType })
+        }
+
+        setSuccess(true)
+        onSubmit?.(updatedUser)
+      } else {
+        // --- MODO CREACIÓN ---
+        const createData: AdminCreateUserData = {
+          email: formData.email.trim().toLowerCase(),
+          password: formData.password,
+          profile: {
+            firstName: formData.firstName.trim(),
+            lastName: formData.lastName.trim(),
+            nickName: formData.nickName.trim() || undefined,
+          },
+          role: formData.role,
+          planType: formData.planType,
+          stage: formData.stage,
+          isSuperUser: formData.isSuperUser,
+          isDemo: formData.isDemo,
+          studioId: formData.studioId.trim() || undefined,
+        }
+
+        // Solo asignar plataforma si es MODEL y se seleccionó una
+        if (isModelRole && formData.platformId) {
+          createData.platformId = formData.platformId
+        }
+
+        const result = await usersService.create(createData)
+
+        setSuccess(true)
+        onSubmit?.(result.user)
       }
-
-      const result = await usersService.create(createData)
-
-      setSuccess(true)
-      onSubmit?.(result.user)
     } catch (err) {
-      const message =
-        err instanceof Error ? err.message : "Error al crear el usuario"
+      const message = err instanceof Error
+        ? err.message
+        : isEditMode ? "Error al actualizar el usuario" : "Error al crear el usuario"
       setError(message)
     } finally {
       setIsLoading(false)
@@ -220,7 +287,7 @@ export function ModelForm({ onSubmit, onCancel, className }: ModelFormProps) {
         <div className="flex items-center gap-3 p-4 bg-emerald-500/10 border border-emerald-500/20 rounded-xl">
           <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0" />
           <p className="text-sm text-emerald-400">
-            Usuario creado correctamente
+            {isEditMode ? "Usuario actualizado correctamente" : "Usuario creado correctamente"}
           </p>
         </div>
       )}
@@ -255,17 +322,17 @@ export function ModelForm({ onSubmit, onCancel, className }: ModelFormProps) {
           <div className="space-y-2">
             <label className={labelClass}>
               <Lock className="w-4 h-4 text-slate-500" />
-              Contraseña <span className="text-red-400">*</span>
+              Contraseña {!isEditMode && <span className="text-red-400">*</span>}
             </label>
             <div className="relative">
               <input
                 type={showPassword ? "text" : "password"}
                 value={formData.password}
                 onChange={(e) => handleChange("password", e.target.value)}
-                placeholder="Mínimo 8 caracteres"
+                placeholder={isEditMode ? "Dejar vacío para mantener actual" : "Mínimo 8 caracteres"}
                 className={cn(inputClass, "pr-12")}
-                required
-                minLength={8}
+                required={!isEditMode}
+                minLength={formData.password ? 8 : undefined}
               />
               <button
                 type="button"
@@ -285,7 +352,7 @@ export function ModelForm({ onSubmit, onCancel, className }: ModelFormProps) {
           <div className="space-y-2">
             <label className={labelClass}>
               <Lock className="w-4 h-4 text-slate-500" />
-              Confirmar Contraseña <span className="text-red-400">*</span>
+              Confirmar Contraseña {!isEditMode && <span className="text-red-400">*</span>}
             </label>
             <div className="relative">
               <input
@@ -294,10 +361,10 @@ export function ModelForm({ onSubmit, onCancel, className }: ModelFormProps) {
                 onChange={(e) =>
                   handleChange("confirmPassword", e.target.value)
                 }
-                placeholder="Repetir contraseña"
+                placeholder={isEditMode ? "Confirmar nueva contraseña" : "Repetir contraseña"}
                 className={cn(inputClass, "pr-12")}
-                required
-                minLength={8}
+                required={!isEditMode}
+                minLength={formData.confirmPassword ? 8 : undefined}
               />
               <button
                 type="button"
@@ -631,12 +698,12 @@ export function ModelForm({ onSubmit, onCancel, className }: ModelFormProps) {
           {isLoading ? (
             <>
               <Loader2 className="w-4 h-4 animate-spin" />
-              Creando Usuario...
+              {isEditMode ? "Guardando cambios..." : "Creando Usuario..."}
             </>
           ) : (
             <>
               <CheckCircle2 className="w-4 h-4" />
-              Crear Usuario
+              {isEditMode ? "Guardar Cambios" : "Crear Usuario"}
             </>
           )}
         </button>
