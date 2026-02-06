@@ -13,6 +13,8 @@ import {
   FileText,
   Video,
   PlusCircle,
+  Pencil,
+  Trash2,
 } from "lucide-react"
 
 /* ===== Types ===== */
@@ -27,6 +29,7 @@ interface Task {
 interface Theme {
   id: string
   title: string
+  order: number
   tasks: Task[]
   isExpanded?: boolean
 }
@@ -37,7 +40,10 @@ interface ModuleStructureSidebarProps {
   selectedTaskId?: string
   onSelectTheme?: (themeId: string) => void
   onSelectTask?: (themeId: string, taskId: string) => void
+  onEditTask?: (themeId: string, taskId: string, taskType: TaskType) => void
+  onDeleteTask?: (themeId: string, taskId: string) => void
   onAddTheme?: () => void
+  onDeleteTheme?: (themeId: string) => void
   className?: string
 }
 
@@ -56,7 +62,10 @@ export function ModuleStructureSidebar({
   selectedTaskId,
   onSelectTheme,
   onSelectTask,
+  onEditTask,
+  onDeleteTask,
   onAddTheme,
+  onDeleteTheme,
   className,
 }: ModuleStructureSidebarProps) {
   const [expandedThemes, setExpandedThemes] = useState<Set<string>>(
@@ -108,7 +117,7 @@ export function ModuleStructureSidebar({
                   onSelectTheme?.(theme.id)
                 }}
                 className={cn(
-                  "flex items-center gap-2 p-2 rounded-lg cursor-pointer transition-all",
+                  "flex items-center gap-2 p-2 rounded-lg cursor-pointer transition-all group/theme",
                   isSelected
                     ? "bg-blue-600/10 border border-blue-600/20"
                     : "hover:bg-white/5 border border-transparent hover:border-white/10"
@@ -126,8 +135,20 @@ export function ModuleStructureSidebar({
                     isSelected ? "text-white" : "text-slate-400"
                   )}
                 >
-                  {index + 1}. {theme.title}
+                  {theme.order}. {theme.title}
                 </span>
+                {onDeleteTheme && (
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      onDeleteTheme(theme.id)
+                    }}
+                    className="p-1 hover:bg-red-500/10 rounded opacity-0 group-hover/theme:opacity-100 transition-opacity"
+                    title="Eliminar tema"
+                  >
+                    <Trash2 className="w-3.5 h-3.5 text-red-400" />
+                  </button>
+                )}
                 {isExpanded ? (
                   <ChevronDown className="w-4 h-4 text-slate-500" />
                 ) : (
@@ -147,25 +168,49 @@ export function ModuleStructureSidebar({
                       <div
                         key={task.id}
                         onClick={() => onSelectTask?.(theme.id, task.id)}
+                        onDoubleClick={() => onEditTask?.(theme.id, task.id, task.type)}
                         className={cn(
                           "flex items-center gap-2 p-2 rounded-lg cursor-pointer transition-all group",
                           isTaskSelected
                             ? "bg-blue-600/20 border border-blue-600/30"
                             : "hover:bg-white/5 border border-transparent hover:border-white/5"
                         )}
+                        title="Doble clic para editar"
                       >
                         <GripVertical className="w-4 h-4 text-slate-600 cursor-grab opacity-0 group-hover:opacity-100 transition-opacity" />
                         <TaskIcon className={cn("w-4 h-4", taskConfig.color)} />
                         <span
                           className={cn(
-                            "text-xs font-medium truncate",
+                            "text-xs font-medium truncate flex-1",
                             isTaskSelected ? "text-white font-bold" : "text-slate-400"
                           )}
                         >
                           {task.title}
                         </span>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            onEditTask?.(theme.id, task.id, task.type)
+                          }}
+                          className="p-1 hover:bg-white/10 rounded opacity-0 group-hover:opacity-100 transition-opacity"
+                          title="Editar"
+                        >
+                          <Pencil className="w-3 h-3 text-slate-400" />
+                        </button>
+                        {onDeleteTask && (
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              onDeleteTask(theme.id, task.id)
+                            }}
+                            className="p-1 hover:bg-red-500/10 rounded opacity-0 group-hover:opacity-100 transition-opacity"
+                            title="Eliminar tarea"
+                          >
+                            <Trash2 className="w-3 h-3 text-red-400" />
+                          </button>
+                        )}
                         {isTaskSelected && (
-                          <div className="ml-auto size-2 rounded-full bg-blue-600" />
+                          <div className="size-2 rounded-full bg-blue-600" />
                         )}
                       </div>
                     )

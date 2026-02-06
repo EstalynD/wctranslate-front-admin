@@ -4,6 +4,7 @@ import { useState, type FormEvent } from "react"
 import { useRouter } from "next/navigation"
 import { Inter } from "next/font/google"
 import { Eye, EyeOff, Shield, Lock, Mail, AlertCircle } from "lucide-react"
+import { authService, ApiError } from "@/lib/api"
 
 const inter = Inter({
   subsets: ["latin"],
@@ -11,12 +12,6 @@ const inter = Inter({
   display: "swap",
   variable: "--font-inter",
 })
-
-// Credenciales de prueba
-const TEST_CREDENTIALS = {
-  email: "admin@wctraining.test",
-  password: "Admin1234",
-}
 
 export default function AdminLoginPage() {
   const router = useRouter()
@@ -31,29 +26,25 @@ export default function AdminLoginPage() {
     setError("")
     setIsLoading(true)
 
-    // Simular delay
-    await new Promise((r) => setTimeout(r, 500))
+    try {
+      const response = await authService.login({ email, password })
 
-    if (
-      email.trim().toLowerCase() === TEST_CREDENTIALS.email &&
-      password === TEST_CREDENTIALS.password
-    ) {
-      // Guardar sesión
-      localStorage.setItem("admin_token", "demo-admin-token-123")
-      localStorage.setItem(
-        "admin_user",
-        JSON.stringify({
-          id: 1,
-          email: TEST_CREDENTIALS.email,
-          name: "Administrador",
-          role: "super_admin",
-        })
-      )
+      // Verificar que sea admin
+      if (response.user.role !== "ADMIN") {
+        setError("Acceso denegado. Se requieren permisos de administrador.")
+        authService.logout()
+        setIsLoading(false)
+        return
+      }
 
       // Redirigir al dashboard
       router.push("/dashboard")
-    } else {
-      setError("Credenciales inválidas")
+    } catch (err) {
+      if (err instanceof ApiError) {
+        setError(err.message || "Credenciales inválidas")
+      } else {
+        setError("Error de conexión. Intenta de nuevo.")
+      }
       setIsLoading(false)
     }
   }
@@ -189,11 +180,11 @@ export default function AdminLoginPage() {
             </form>
           </div>
 
-          {/* Test Credentials Info */}
-          <div className="mt-4 p-3 rounded-lg bg-white/5 border border-white/10">
-            <p className="text-slate-400 text-[10px] font-bold uppercase tracking-wider mb-1">Credenciales de prueba:</p>
-            <p className="text-slate-300 text-xs">Email: admin@wctraining.test</p>
-            <p className="text-slate-300 text-xs">Password: Admin1234</p>
+          {/* Security Info */}
+          <div className="mt-4 p-3 rounded-lg bg-white/5 border border-white/10 text-center">
+            <p className="text-slate-400 text-xs">
+              Solo usuarios con rol <span className="text-blue-400 font-medium">ADMIN</span> pueden acceder al panel.
+            </p>
           </div>
         </div>
       </main>

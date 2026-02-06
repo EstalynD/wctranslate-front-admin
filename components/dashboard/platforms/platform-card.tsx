@@ -1,40 +1,35 @@
 "use client"
 
 import Image from "next/image"
-import { Pencil, Eye, Trash2, Layers, User, Tag, Signal } from "lucide-react"
+import { Pencil, Trash2, Globe, Power, ExternalLink } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { PlatformStatus, PlatformType, platformTypeLabels } from "@/lib/api"
 
 /* ===== Types ===== */
-type ModuleStatus = "published" | "draft" | "archived"
-
-interface ModuleCardProps {
+interface PlatformCardProps {
   id: string
-  title: string
-  image?: string
-  status: ModuleStatus
-  topicsCount: number
-  modelsCount: number
-  category?: string
-  level?: string
+  name: string
+  type: PlatformType
+  description?: string
+  favicon?: string | null
+  logoUrl?: string | null
+  websiteUrl?: string | null
+  status: PlatformStatus
   priority?: boolean
   onEdit?: () => void
-  onPreview?: () => void
+  onToggleStatus?: () => void
   onDelete?: () => void
   className?: string
 }
 
 /* ===== Status Config ===== */
-const statusConfig: Record<ModuleStatus, { label: string; classes: string }> = {
-  published: {
-    label: "Publicado",
+const statusConfig: Record<PlatformStatus, { label: string; classes: string }> = {
+  [PlatformStatus.ACTIVE]: {
+    label: "Activa",
     classes: "bg-emerald-500/20 text-emerald-400 border-emerald-500/30",
   },
-  draft: {
-    label: "Borrador",
-    classes: "bg-amber-500/20 text-amber-400 border-amber-500/30",
-  },
-  archived: {
-    label: "Archivado",
+  [PlatformStatus.INACTIVE]: {
+    label: "Inactiva",
     classes: "bg-slate-500/20 text-slate-400 border-slate-500/30",
   },
 }
@@ -54,25 +49,27 @@ function getColorByIndex(index: number): string {
 }
 
 /* ===== Component ===== */
-export function ModuleCard({
+export function PlatformCard({
   id,
-  title,
-  image,
+  name,
+  type,
+  description,
+  favicon,
+  logoUrl,
+  websiteUrl,
   status,
-  topicsCount,
-  modelsCount,
-  category,
-  level,
   priority = false,
   onEdit,
-  onPreview,
+  onToggleStatus,
   onDelete,
   className,
-}: ModuleCardProps) {
+}: PlatformCardProps) {
   const statusInfo = statusConfig[status]
   // Usar el ID para generar un índice consistente de color
   const colorIndex = id.split("").reduce((acc, char) => acc + char.charCodeAt(0), 0)
   const fallbackColor = getColorByIndex(colorIndex)
+
+  const imageToShow = logoUrl || favicon
 
   return (
     <div
@@ -82,15 +79,15 @@ export function ModuleCard({
       )}
     >
       {/* Image / Fallback Color */}
-      <div className="relative h-44 overflow-hidden">
-        {image ? (
+      <div className="relative h-36 overflow-hidden">
+        {imageToShow ? (
           <Image
-            src={image}
-            alt={title}
+            src={imageToShow}
+            alt={name}
             fill
             sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 25vw"
             priority={priority}
-            className="object-cover transition-transform duration-500 group-hover:scale-110"
+            className="object-contain p-4 transition-transform duration-500 group-hover:scale-110"
           />
         ) : (
           <div
@@ -99,7 +96,7 @@ export function ModuleCard({
               fallbackColor
             )}
           >
-            <Layers className="w-16 h-16 text-white/30" />
+            <Globe className="w-12 h-12 text-white/30" />
           </div>
         )}
         {/* Gradient Overlay */}
@@ -116,46 +113,59 @@ export function ModuleCard({
             {statusInfo.label}
           </span>
         </div>
+
+        {/* Favicon pequeño si hay logo */}
+        {logoUrl && favicon && (
+          <div className="absolute top-3 right-3">
+            <Image
+              src={favicon}
+              alt={`${name} favicon`}
+              width={24}
+              height={24}
+              className="rounded-md"
+            />
+          </div>
+        )}
       </div>
 
       {/* Content */}
       <div className="p-5 flex-1 flex flex-col">
         <h3 className="font-bold text-white text-lg mb-2 line-clamp-1">
-          {title}
+          {name}
         </h3>
 
-        {/* Category & Level */}
-        {(category || level) && (
-          <div className="flex items-center gap-2 mb-4 flex-wrap">
-            {category && (
-              <span className="inline-flex items-center gap-1 text-[10px] font-medium px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-400 border border-blue-500/20">
-                <Tag className="w-3 h-3" />
-                {category}
-              </span>
-            )}
-            {level && (
-              <span className="inline-flex items-center gap-1 text-[10px] font-medium px-2 py-0.5 rounded-full bg-violet-500/10 text-violet-400 border border-violet-500/20">
-                <Signal className="w-3 h-3" />
-                {level}
-              </span>
-            )}
-          </div>
-        )}
-
-        {/* Stats */}
-        <div className="flex items-center gap-4 mb-6">
-          <div className="flex items-center gap-1.5 text-slate-400">
-            <Layers className="w-4 h-4" />
-            <span className="text-xs font-semibold">{topicsCount} Temas</span>
-          </div>
-          <div className="flex items-center gap-1.5 text-slate-400">
-            <User className="w-4 h-4" />
-            <span className="text-xs font-semibold">{modelsCount} Modelos</span>
-          </div>
+        {/* Type Badge */}
+        <div className="mb-3">
+          <span className="inline-flex items-center text-[10px] font-bold px-2.5 py-1 rounded-full border uppercase tracking-wider bg-blue-500/10 text-blue-400 border-blue-500/30">
+            {platformTypeLabels[type]}
+          </span>
         </div>
 
+        {/* Description */}
+        {description && (
+          <p className="text-sm text-slate-400 line-clamp-2 mb-4">
+            {description}
+          </p>
+        )}
+
+        {/* Website URL */}
+        {websiteUrl && (
+          <a
+            href={websiteUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1.5 text-xs text-blue-400 hover:text-blue-300 transition-colors mb-4"
+          >
+            <ExternalLink className="w-3.5 h-3.5" />
+            <span className="truncate max-w-[180px]">{websiteUrl.replace(/^https?:\/\//, '')}</span>
+          </a>
+        )}
+
+        {/* Spacer */}
+        <div className="flex-1" />
+
         {/* Actions */}
-        <div className="mt-auto flex items-center justify-between pt-4 border-t border-white/5">
+        <div className="flex items-center justify-between pt-4 border-t border-white/5">
           <div className="flex items-center gap-2">
             <button
               onClick={onEdit}
@@ -165,11 +175,16 @@ export function ModuleCard({
               <Pencil className="w-4 h-4" />
             </button>
             <button
-              onClick={onPreview}
-              className="size-9 rounded-lg bg-white/5 flex items-center justify-center text-slate-300 hover:bg-white/10 transition-all"
-              title="Vista Previa"
+              onClick={onToggleStatus}
+              className={cn(
+                "size-9 rounded-lg bg-white/5 flex items-center justify-center transition-all",
+                status === PlatformStatus.ACTIVE
+                  ? "text-emerald-400 hover:bg-slate-500/20 hover:text-slate-400"
+                  : "text-slate-400 hover:bg-emerald-500/20 hover:text-emerald-400"
+              )}
+              title={status === PlatformStatus.ACTIVE ? "Desactivar" : "Activar"}
             >
-              <Eye className="w-4 h-4" />
+              <Power className="w-4 h-4" />
             </button>
           </div>
           <button
@@ -185,18 +200,18 @@ export function ModuleCard({
   )
 }
 
-/* ===== Add Module Card ===== */
-interface AddModuleCardProps {
+/* ===== Add Platform Card ===== */
+interface AddPlatformCardProps {
   onClick?: () => void
   className?: string
 }
 
-export function AddModuleCard({ onClick, className }: AddModuleCardProps) {
+export function AddPlatformCard({ onClick, className }: AddPlatformCardProps) {
   return (
     <button
       onClick={onClick}
       className={cn(
-        "rounded-2xl border-2 border-dashed border-white/10 hover:border-blue-600/50 hover:bg-white/[0.02] transition-all flex flex-col items-center justify-center min-h-[360px] group",
+        "rounded-2xl border-2 border-dashed border-white/10 hover:border-blue-600/50 hover:bg-white/[0.02] transition-all flex flex-col items-center justify-center min-h-[320px] group",
         className
       )}
     >
@@ -206,10 +221,10 @@ export function AddModuleCard({ onClick, className }: AddModuleCardProps) {
         </svg>
       </div>
       <span className="text-slate-400 font-bold group-hover:text-white transition-colors">
-        Nuevo Módulo
+        Nueva Plataforma
       </span>
       <span className="text-xs text-slate-600 px-8 text-center mt-2">
-        Crea una nueva secuencia de formación
+        Agrega una nueva plataforma de streaming
       </span>
     </button>
   )

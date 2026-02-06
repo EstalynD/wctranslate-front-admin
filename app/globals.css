@@ -63,6 +63,38 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* ===== Select / Option Dark Theme ===== */
+select {
+  color-scheme: dark;
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m4 6 4 4 4-4'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 16px;
+  padding-right: 2.5rem;
+}
+
+select option {
+  background-color: #1e293b;
+  color: #f1f5f9;
+  padding: 8px 12px;
+}
+
+select option:checked {
+  background-color: #2563eb;
+  color: white;
+}
+
+select option:hover {
+  background-color: #334155;
+}
+
+select:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 /* ===== Glass Effect ===== */
 .glass-effect {
   background: var(--glass-bg);

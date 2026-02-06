@@ -3,13 +3,7 @@
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { Sidebar } from "@/components/dashboard/sidebar"
-
-interface AdminUser {
-  id: number
-  email: string
-  name: string
-  role: string
-}
+import { authService, type User } from "@/lib/api"
 
 export default function DashboardLayout({
   children,
@@ -17,27 +11,25 @@ export default function DashboardLayout({
   children: React.ReactNode
 }) {
   const router = useRouter()
-  const [user, setUser] = useState<AdminUser | null>(null)
+  const [user, setUser] = useState<User | null>(null)
   const [isReady, setIsReady] = useState(false)
 
   useEffect(() => {
-    // Verificar autenticación UNA SOLA VEZ
-    const token = localStorage.getItem("admin_token")
-    const storedUser = localStorage.getItem("admin_user")
-
-    if (!token || !storedUser) {
-      // No autenticado, redirigir
+    // Verificar autenticación
+    if (!authService.isAuthenticated()) {
       window.location.href = "/login"
       return
     }
 
-    try {
-      const userData = JSON.parse(storedUser)
-      setUser(userData)
-      setIsReady(true)
-    } catch {
+    const storedUser = authService.getStoredUser()
+    if (!storedUser || storedUser.role !== "ADMIN") {
+      authService.logout()
       window.location.href = "/login"
+      return
     }
+
+    setUser(storedUser)
+    setIsReady(true)
   }, [])
 
   // Mostrar loading mientras verifica
@@ -52,14 +44,18 @@ export default function DashboardLayout({
     )
   }
 
+  const displayName = user?.profile
+    ? `${user.profile.firstName} ${user.profile.lastName}`
+    : user?.email ?? "Admin"
+
   return (
     <div className="min-h-screen bg-slate-950 flex">
       {/* Sidebar */}
       <Sidebar
-        user={user ? {
-          name: user.name,
-          role: user.role === "super_admin" ? "Super Admin" : user.role,
-        } : undefined}
+        user={{
+          name: displayName,
+          role: user?.role === "ADMIN" ? "Administrador" : user?.role ?? "",
+        }}
       />
 
       {/* Main Content */}

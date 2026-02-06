@@ -12,8 +12,11 @@ import {
   Settings,
   Dumbbell,
   Blocks,
+  LogOut,
+  Globe,
 } from "lucide-react"
 import Image from "next/image"
+import { authService } from "@/lib/api"
 
 interface NavItem {
   title: string
@@ -44,6 +47,11 @@ const navItems: NavItem[] = [
     icon: Building2,
   },
   {
+    title: "Plataformas",
+    href: "/dashboard/platforms",
+    icon: Globe,
+  },
+  {
     title: "Reportes",
     href: "/dashboard/reports",
     icon: BarChart3,
@@ -52,6 +60,11 @@ const navItems: NavItem[] = [
     title: "Pagos",
     href: "/dashboard/payments",
     icon: CreditCard,
+  },
+  {
+    title: "Configuración",
+    href: "/dashboard/settings",
+    icon: Settings,
   },
 ]
 
@@ -73,9 +86,8 @@ export function Sidebar({ user }: SidebarProps) {
     return pathname.startsWith(href)
   }
 
-  const handleLogout = () => {
-    localStorage.removeItem("admin_auth_token")
-    localStorage.removeItem("admin_user")
+  const handleLogout = async () => {
+    await authService.logout()
     window.location.href = "/login"
   }
 
@@ -166,7 +178,7 @@ export function Sidebar({ user }: SidebarProps) {
             className="text-slate-400 hover:text-white transition-colors"
             title="Cerrar sesión"
           >
-            <Settings className="w-5 h-5" />
+            <LogOut className="w-5 h-5" />
           </button>
         </div>
       </div>
